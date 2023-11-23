@@ -7,7 +7,9 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class GroupingProcessor {
     public static void main(String[] args) {
@@ -64,15 +66,15 @@ public class GroupingProcessor {
 
     private static List<List<String>> findGroups(List<String> lines) {
         List<List<String>> groups = new ArrayList<>();
-        List<String> uniqueLines = new ArrayList<>();
+        Set<String> uniqueValues = new HashSet<>();
 
         for (String line : lines) {
             String[] values = line.split(";");
             List<String> currentGroup = new ArrayList<>();
 
             for (String value : values) {
-                if (!value.isEmpty() && uniqueLines.add(value)) {
-                    currentGroup.add(line);
+                if (!value.isEmpty() && !uniqueValues.add(value)) {
+                    currentGroup.add(value);
                 }
             }
 
@@ -80,9 +82,9 @@ public class GroupingProcessor {
                 groups.add(currentGroup);
             }
         }
-
         return groups;
     }
+
 
     private static void writeGroupsToFile(List<List<String>> groups, String filePath) throws IOException {
         try (PrintWriter writer = new PrintWriter(new FileWriter(filePath))) {

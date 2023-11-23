@@ -6,10 +6,7 @@ import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class GroupingProcessor {
     public static void main(String[] args) {
@@ -66,22 +63,41 @@ public class GroupingProcessor {
 
     private static List<List<String>> findGroups(List<String> lines) {
         List<List<String>> groups = new ArrayList<>();
-        Set<String> uniqueValues = new HashSet<>();
+        Map<String, List<String>> valueToLinesMap = new HashMap<>();
 
         for (String line : lines) {
             String[] values = line.split(";");
-            List<String> currentGroup = new ArrayList<>();
+            boolean foundGroup = false;
 
             for (String value : values) {
-                if (!value.isEmpty() && !uniqueValues.add(value)) {
-                    currentGroup.add(value);
+                if (!value.isEmpty()) {
+                    List<String> group = valueToLinesMap.get(value);
+                    if (group != null) {
+                        group.add(line);
+                        foundGroup = true;
+                        break;
+                    }
                 }
             }
 
-            if (currentGroup.size() > 1) {
-                groups.add(currentGroup);
+            if (!foundGroup) {
+                List<String> newGroup = new ArrayList<>();
+                newGroup.add(line);
+                for (String value : values) {
+                    if (!value.isEmpty()) {
+                        valueToLinesMap.put(value, newGroup);
+                    }
+                }
             }
         }
+
+        for (List<String> group : valueToLinesMap.values()) {
+            if (group.size() > 1) {
+                groups.add(group);
+            }
+        }
+
+        groups.sort(Comparator.comparingInt(List<String>::size).reversed()); // Сортировка по размеру, от большего к меньшему
         return groups;
     }
 

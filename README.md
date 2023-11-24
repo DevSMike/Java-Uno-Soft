@@ -5,8 +5,8 @@
 ## Результат выполнения
 
 ```
-Number of groups with more than one element: 37223
-Execution time: 7495 ms
+Number of groups with more than one element: 5378
+Execution time: 3339 ms
 ```
 
 ## Текст задания

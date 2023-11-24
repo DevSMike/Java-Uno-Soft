@@ -91,7 +91,9 @@ public class GroupingProcessor {
             }
         }
 
-        for (List<String> group : valueToLinesMap.values()) {
+        Set<List<String>> uniqueGroups = new HashSet<>(valueToLinesMap.values());
+
+        for (List<String> group : uniqueGroups) {
             if (group.size() > 1) {
                 groups.add(group);
             }
@@ -100,6 +102,7 @@ public class GroupingProcessor {
         groups.sort(Comparator.comparingInt(List<String>::size).reversed()); // Сортировка по размеру, от большего к меньшему
         return groups;
     }
+
 
 
     private static void writeGroupsToFile(List<List<String>> groups, String filePath) throws IOException {

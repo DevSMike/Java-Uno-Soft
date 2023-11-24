@@ -5,9 +5,8 @@
 ## Результат выполнения
 
 ```
-D:\Programs\Java\Java Uno-Soft>java -Xmx1G -jar target/uno.soft-1.0-SNAPSHOT.jar output.txt
-Number of groups with more than one element: 169987
-Execution time: 3672 ms
+Number of groups with more than one element: 5378
+Execution time: 3339 ms
 ```
 
 ## Текст задания

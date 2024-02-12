@@ -10,6 +10,11 @@ import java.util.*;
 
 public class GroupingProcessor {
     public static void main(String[] args) {
+        if (args.length < 1) {
+            System.err.println("Usage: java -jar GroupingProcessor.jar <output_file_path>");
+            System.exit(1);
+        }
+
         String filePath = args[0]; // Имя файла для сохранения результатов
 
         try {
@@ -22,7 +27,14 @@ public class GroupingProcessor {
             writeGroupsToFile(groups, filePath);
             long endTime = System.currentTimeMillis();
 
-            System.out.println("Number of groups with more than one element: " + groups.size());
+            int numOfGroups = 0;
+            for (List<String> group : groups) {
+                if (group.size() > 1) {
+                    numOfGroups++;
+                }
+            }
+
+            System.out.println("Number of groups with more than one element: " + numOfGroups);
             System.out.println("Execution time: " + (endTime - startTime) + " ms");
         } catch (IOException e) {
             e.printStackTrace();
@@ -54,11 +66,18 @@ public class GroupingProcessor {
 
             String line;
             while ((line = reader.readLine()) != null) {
-                lines.add(line);
+                if (isValidLine(line)) {
+                    lines.add(line);
+                }
             }
         }
 
         return lines;
+    }
+
+    private static boolean isValidLine(String line) {
+        // Проверка наличия точек с запятой и отсутствия двойных кавычек
+        return line.contains(";") && !line.contains("\"\"");
     }
 
     private static List<List<String>> findGroups(List<String> lines) {
@@ -103,17 +122,18 @@ public class GroupingProcessor {
         return groups;
     }
 
-
-
     private static void writeGroupsToFile(List<List<String>> groups, String filePath) throws IOException {
         try (PrintWriter writer = new PrintWriter(new FileWriter(filePath))) {
             for (int i = 0; i < groups.size(); i++) {
                 List<String> group = groups.get(i);
-                writer.println("Group " + (i + 1));
-                for (String line : group) {
-                    writer.println(line);
+                if (group.size() > 1) {
+                    writer.println("Group " + (i + 1));
+                    Set<String> uniqueLines = new HashSet<>(group);
+                    for (String uniqueLine : uniqueLines) {
+                        writer.println(uniqueLine);
+                    }
+                    writer.println();
                 }
-                writer.println();
             }
         }
     }

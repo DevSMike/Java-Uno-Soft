@@ -13,7 +13,7 @@ target/
 *.ipr
 *.txt
 *.gz
-
+.idea
 ### Eclipse ###
 .apt_generated
 .classpath
